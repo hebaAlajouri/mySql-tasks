@@ -1,0 +1,180 @@
+CREATE DATABASE IF NOT EXISTS test2;
+USE test2;
+
+-- Create Students Table
+CREATE TABLE students (
+    student_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    date_of_birth DATE NOT NULL,
+    gender ENUM('Male', 'Female', 'Other') NOT NULL,
+    major VARCHAR(100) NOT NULL,
+    enrollment_year YEAR NOT NULL
+) ENGINE=InnoDB;
+
+-- Create Courses Table
+CREATE TABLE courses (
+    course_id INT AUTO_INCREMENT PRIMARY KEY,
+    course_name VARCHAR(100) NOT NULL,
+    course_code VARCHAR(10) UNIQUE NOT NULL,
+    credits INT NOT NULL,
+    department VARCHAR(100) NOT NULL
+) ENGINE=InnoDB;
+
+-- Create Instructors Table
+CREATE TABLE instructors (
+    instructor_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    hire_date DATE NOT NULL,
+    department VARCHAR(100) NOT NULL
+) ENGINE=InnoDB;
+
+-- Create Enrollments Table (Mapping Students to Courses)
+CREATE TABLE enrollments (
+    enrollment_id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    course_id INT NOT NULL,
+    grade DECIMAL(4,2) CHECK (grade BETWEEN 0 AND 100),
+    FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- Create Course Assignments Table (Mapping Instructors to Courses)
+CREATE TABLE course_assignments (
+    assignment_id INT AUTO_INCREMENT PRIMARY KEY,
+    instructor_id INT NOT NULL,
+    course_id INT NOT NULL,
+    semester ENUM('Spring', 'Summer', 'Fall', 'Winter') NOT NULL,
+    year YEAR NOT NULL,
+    FOREIGN KEY (instructor_id) REFERENCES instructors(instructor_id) ON DELETE CASCADE,
+    FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+INSERT INTO students (first_name, last_name, email, date_of_birth, gender, major, enrollment_year) VALUES
+('Ali', 'Hassan', 'ali.hassan@example.com', '2002-05-12', 'Male', 'Computer Science', 2020),
+('Sara', 'Khalid', 'sara.khalid@example.com', '2001-07-24', 'Female', 'Engineering', 2019),
+('Omar', 'Ahmad', 'omar.ahmad@example.com', '2003-02-15', 'Male', 'Mathematics', 2021),
+('Lina', 'Samir', 'lina.samir@example.com', '2000-09-30', 'Female', 'Physics', 2018),
+('Hadi', 'Nour', 'hadi.nour@example.com', '2001-12-10', 'Male', 'Biology', 2019),
+('Mona', 'Tariq', 'mona.tariq@example.com', '2002-06-25', 'Female', 'Computer Science', 2020),
+('Jamal', 'Mahmoud', 'jamal.mahmoud@example.com', '2000-03-18', 'Male', 'Engineering', 2018),
+('Reem', 'Faisal', 'reem.faisal@example.com', '2003-11-07', 'Female', 'Mathematics', 2021),
+('Ahmad', 'Yousef', 'ahmad.yousef@example.com', '2001-08-21', 'Male', 'Physics', 2019),
+('Dina', 'Saeed', 'dina.saeed@example.com', '2002-04-14', 'Female', 'Biology', 2020);
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+INSERT INTO instructors (first_name, last_name, email, hire_date, department) VALUES
+('Dr. Khaled', 'Sami', 'khaled.sami@example.com', '2015-09-01', 'Computer Science'),
+('Dr. Aisha', 'Fadel', 'aisha.fadel@example.com', '2012-07-10', 'Engineering'),
+('Dr. Basim', 'Hatem', 'basim.hatem@example.com', '2017-04-20', 'Mathematics'),
+('Dr. Noor', 'Salem', 'noor.salem@example.com', '2010-12-15', 'Physics'),
+('Dr. Tariq', 'Nasir', 'tariq.nasir@example.com', '2018-01-05', 'Biology');
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+INSERT INTO courses (course_name, course_code, credits, department) VALUES
+('Database Systems', 'CS101', 3, 'Computer Science'),
+('Mechanics', 'ENG202', 4, 'Engineering'),
+('Linear Algebra', 'MATH303', 3, 'Mathematics'),
+('Quantum Physics', 'PHYS404', 3, 'Physics'),
+('Genetics', 'BIO505', 4, 'Biology');
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+INSERT INTO course_assignments (instructor_id, course_id, semester, year) VALUES
+(1, 1, 'Fall', 2024), -- Dr. Khaled teaches Database Systems
+(2, 2, 'Spring', 2024), -- Dr. Aisha teaches Mechanics
+(3, 3, 'Winter', 2024), -- Dr. Basim teaches Linear Algebra
+(4, 4, 'Fall', 2024), -- Dr. Noor teaches Quantum Physics
+(5, 5, 'Spring', 2024); -- Dr. Tariq teaches Genetics
+////////////////////////////////////////////////////////////////////////////////////////////////////
+INSERT INTO enrollments (student_id, course_id, grade) VALUES
+(1, 1, 85), (1, 2, 78), -- Ali enrolled in Database Systems & Mechanics
+(2, 3, 90), (2, 5, 88), -- Sara enrolled in Linear Algebra & Genetics
+(3, 4, 76), (3, 1, 84), -- Omar enrolled in Quantum Physics & Database Systems
+(4, 2, 92), (4, 3, 89), -- Lina enrolled in Mechanics & Linear Algebra
+(5, 5, 73), (5, 4, 81), -- Hadi enrolled in Genetics & Quantum Physics
+(6, 1, 95), (6, 3, 79), -- Mona enrolled in Database Systems & Linear Algebra
+(7, 2, 82), (7, 5, 91), -- Jamal enrolled in Mechanics & Genetics
+(8, 4, 88), (8, 1, 83), -- Reem enrolled in Quantum Physics & Database Systems
+(9, 3, 74), (9, 2, 86), -- Ahmad enrolled in Linear Algebra & Mechanics
+(10, 5, 89), (10, 4, 80); -- Dina enrolled in Genetics & Quantum Physics
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+CREATE TABLE instructors (
+    instructor_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    hire_date DATE NOT NULL,
+    department VARCHAR(50) NOT NULL
+) ENGINE=InnoDB;
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+SELECT * FROM students;
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+SELECT COUNT(*) AS total_courses FROM courses;
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+SELECT s.first_name, s.last_name
+FROM students s
+JOIN enrollments e ON s.student_id = e.student_id
+JOIN courses c ON e.course_id = c.course_id
+WHERE c.course_name = 'Database Systems'; -- Change the course name as needed
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+SELECT first_name, last_name, email 
+FROM instructors 
+WHERE department = 'Computer Science'; -- Change the department name as needed
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+SELECT c.course_name, i.first_name, i.last_name
+FROM courses c
+JOIN course_assignments ca ON c.course_id = ca.course_id
+JOIN instructors i ON ca.instructor_id = i.instructor_id;
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+SELECT c.course_name, COUNT(e.student_id) AS total_students
+FROM courses c
+LEFT JOIN enrollments e ON c.course_id = e.course_id
+GROUP BY c.course_id, c.course_name
+ORDER BY total_students DESC; -- Sort by most enrolled courses
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+SELECT c.course_name, i.first_name, i.last_name, ca.semester, ca.year
+FROM courses c
+JOIN course_assignments ca ON c.course_id = ca.course_id
+JOIN instructors i ON ca.instructor_id = i.instructor_id
+WHERE ca.semester = 'Fall' AND ca.year = 2024; -- Change as needed
+////////////////////////////////////////////////////////////////////////////////////////////////////////
+SELECT c.course_name, ROUND(AVG(e.grade), 2) AS average_grade
+FROM enrollments e
+JOIN courses c ON e.course_id = c.course_id
+WHERE c.course_name = 'Database Systems' -- Change course name as needed
+GROUP BY c.course_name;
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+SELECT s.student_id, s.first_name, s.last_name, COUNT(e.course_id) AS total_courses
+FROM students s
+JOIN enrollments e ON s.student_id = e.student_id
+JOIN course_assignments ca ON e.course_id = ca.course_id
+WHERE ca.semester = 'Spring' AND ca.year = 2025 -- Change as needed
+GROUP BY s.student_id
+HAVING total_courses > 3
+ORDER BY total_courses DESC;
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+SELECT s.student_id, s.first_name, s.last_name, c.course_name, e.grade
+FROM students s
+JOIN enrollments e ON s.student_id = e.student_id
+JOIN courses c ON e.course_id = c.course_id
+WHERE e.grade IS NULL;
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+SELECT s.student_id, s.first_name, s.last_name, ROUND(AVG(e.grade), 2) AS avg_grade
+FROM students s
+JOIN enrollments e ON s.student_id = e.student_id
+GROUP BY s.student_id
+ORDER BY avg_grade DESC
+LIMIT 1;
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+SELECT c.department, COUNT(c.course_id) AS total_courses
+FROM courses c
+JOIN course_assignments ca ON c.course_id = ca.course_id
+WHERE ca.year = 2025 -- Change as needed
+GROUP BY c.department
+ORDER BY total_courses DESC
+LIMIT 1;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+SELECT c.course_id, c.course_name
+FROM courses c
+LEFT JOIN enrollments e ON c.course_id = e.course_id
+WHERE e.course_id IS NULL;
